@@ -106,13 +106,13 @@ test:
 	lua tests/run_tests.lua
 
 install: gzlc utilities/gzlparse runtime/libgazelle.a $(INC)
-	install -d -o root -g root $(BINDIR)
-	install -m 0755 -o root -g root gzlc $(BINDIR)
-	install -m 0755 -o root -g root utilities/gzlparse $(BINDIR)
-	install -d -o root -g root $(LIBDIR)
-	install -m 0644 -o root -g root runtime/libgazelle.a $(LIBDIR)
+	install -d $(BINDIR)
+	install -m 0755 gzlc $(BINDIR)
+	install -m 0755 utilities/gzlparse $(BINDIR)
+	install -d $(LIBDIR)
+	install -m 0644 runtime/libgazelle.a $(LIBDIR)
 	install -d $(INCDIR)/gazelle
-	install -m 0644 -o root -g root $(INC) $(INCDIR)/gazelle
+	install -m 0644 $(INC) $(INCDIR)/gazelle
 
 clean:
 	$(RM) $(OBJ)
