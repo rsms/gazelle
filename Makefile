@@ -9,6 +9,7 @@ IMGDIR := /usr/share/asciidoc/images
 CFLAGS += -std=c99
 CPPFLAGS += -Iruntime/include
 LDFLAGS += -llua
+LD = c++
 
 ifeq ($(shell uname), Darwin)
   ifeq "$(wildcard /opt/local)" "/opt/local"
@@ -17,8 +18,6 @@ ifeq ($(shell uname), Darwin)
   endif
   CPPFLAGS += -I/usr/include/lua5.1
   LDFLAGS += -L/usr/local/lib
-  # needed for building the lua ext
-  LDFLAGS += -undefined dynamic_lookup
 else
   CFLAGS += $(strip $(shell pkg-config --silence-errors --cflags lua || pkg-config --cflags lua5.1))
   LDFLAGS := $(strip $(shell pkg-config --silence-errors --libs lua || pkg-config --libs lua5.1))
@@ -73,6 +72,8 @@ $(RTOBJ) $(EXTOBJ): CFLAGS += -fPIC
 lang_ext/lua/bc_read_stream.so: lang_ext/lua/bc_read_stream.o \
                                 runtime/bc_read_stream.o
 
+lang_ext/lua/gazelle.so: lang_ext/lua/gazelle.o runtime/load_grammar.o runtime/bc_read_stream.o
+
 runtime/libgazelle.a(%.o): %.o
 	$(AR) cr $@ $^
 
@@ -82,8 +83,9 @@ runtime/libgazelle.a: runtime/libgazelle.a($(RTOBJ))
 utilities/luac.lua: utilities/test64bit
 
 utilities/bitcode_dump: utilities/bitcode_dump.o $(RTOBJ)
-
+	$(LD) $(LDFLAGS) $^ -o $@
 utilities/gzlparse: utilities/gzlparse.o $(RTOBJ)
+	$(LD) $(LDFLAGS) $^ -o $@
 
 gzlc: utilities/luac.lua utilities/srlua utilities/srlua-glue \
       compiler/gzlc | $(LUASRC) sketches/pp.lua sketches/dump_to_html.lua
