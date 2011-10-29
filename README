@@ -29,6 +29,10 @@ To build and install Gazelle, type:
 $ make
 $ make install
 
+if os is freebsd-like,type:
+$ make
+$ make macinstall
+
 You can change the installation location as follows:
 
 $ make PREFIX=/usr/local
