@@ -114,6 +114,16 @@ install: gzlc utilities/gzlparse runtime/libgazelle.a $(INC)
 	install -d $(INCDIR)/gazelle
 	install -m 0644 -o root -g root $(INC) $(INCDIR)/gazelle
 
+#if os is freebsd-like,change "-o root -g root" to "-o root -g wheel"
+macinstall: gzlc utilities/gzlparse runtime/libgazelle.a $(INC)
+	install -d -o root -g wheel $(BINDIR)
+	install -m 0755 -o root -g wheel gzlc $(BINDIR)
+	install -m 0755 -o root -g wheel utilities/gzlparse $(BINDIR)
+	install -d -o root -g wheel $(LIBDIR)
+	install -m 0644 -o root -g wheel runtime/libgazelle.a $(LIBDIR)
+	install -d $(INCDIR)/gazelle
+	install -m 0644 -o root -g wheel $(INC) $(INCDIR)/gazelle
+
 clean:
 	$(RM) $(OBJ)
 	$(RM) $(DEP)
